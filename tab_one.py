@@ -10,9 +10,9 @@ class TabOne(ttk.Frame):
 
         conn = sqlite3.connect('store.db')
         cur = conn.cursor()
-        self.treeview = ttk.Treeview(self, columns=("id", "product_name", "quantity", "purchase_date", "purchase_price", "selling_price"))
+        self.treeview = ttk.Treeview(self, columns=(
+            "product_name", "quantity", "purchase_date", "purchase_price", "selling_price"))
         self.treeview.heading("#0", text="ID")
-        self.treeview.heading("id", text="ID")
         self.treeview.heading("product_name", text="Название товара")
         self.treeview.heading("quantity", text="Количество")
         self.treeview.heading("purchase_date", text="Дата закупки")
@@ -24,18 +24,19 @@ class TabOne(ttk.Frame):
                        FROM Product_batches AS pb JOIN Products AS p ON pb.product_id=p.id''')
         data = cur.fetchall()
         for row in data:
-            self.treeview.insert("", "end", text=row[0], values=row[0:])
+            self.treeview.insert("", "end", text=row[0], values=row[1:])
 
         self.treeview.pack(padx=10, pady=10)
-        
+
         # Добавление кнопки добавления новых товаров
-        add_product_button = ttk.Button(self, text="Добавить товар", command=self.add_product)
+        add_product_button = ttk.Button(
+            self, text="Добавить товар", command=self.add_product)
         add_product_button.pack(pady=10)
-    
+
     def add_product(self):
         # Открытие окна для добавления нового товара
         add_product_window = AddProductWindow(self)
-        
+
         if add_product_window.result is not None:
             # Добавление информации о новом товаре в базу данных
             conn = sqlite3.connect('store.db')
@@ -48,7 +49,9 @@ class TabOne(ttk.Frame):
             conn.commit()
 
             # Добавление информации о новом товаре в Treeview
-            self.treeview.insert("", "end", text=product_id, values=add_product_window.result[:5])
+            self.treeview.insert("", "end", text=product_id,
+                                 values=add_product_window.result[:5])
+
 
 class AddProductWindow(tk.Toplevel):
     def __init__(self, parent):
@@ -77,19 +80,22 @@ class AddProductWindow(tk.Toplevel):
         quantity_label.grid(row=3, column=0, padx=5, pady=5, sticky="w")
         self.quantity_entry.grid(row=3, column=1, padx=5, pady=5)
 
-        purchase_date_label = ttk.Label(self, text="Дата закупки (ГГГГ-ММ-ДД):")
+        purchase_date_label = ttk.Label(
+            self, text="Дата закупки (ГГГГ-ММ-ДД):")
         self.purchase_date_entry = ttk.Entry(self)
         purchase_date_label.grid(row=4, column=0, padx=5, pady=5, sticky="w")
         self.purchase_date_entry.grid(row=4, column=1, padx=5, pady=5)
 
-        add_button = ttk.Button(self, text="Добавить", command=self.add_product)
+        add_button = ttk.Button(self, text="Добавить",
+                                command=self.add_product)
         add_button.grid(row=5, column=1, padx=5, pady=5, sticky="e")
 
         self.grab_set()
         self.protocol("WM_DELETE_WINDOW", self.cancel)
-        self.geometry("+{}+{}".format(parent.winfo_rootx()+50, parent.winfo_rooty()+50))
+        self.geometry("+{}+{}".format(parent.winfo_rootx() +
+                      50, parent.winfo_rooty()+50))
         self.wait_window()
-    
+
     def add_product(self):
         name = self.name_entry.get()
         buy_price = float(self.buy_price_entry.get())
@@ -102,7 +108,7 @@ class AddProductWindow(tk.Toplevel):
                     (name, buy_price, sell_price, quantity))
         product_id = cur.lastrowid
         cur.execute("INSERT INTO Product_batches (product_id, purchase_price, selling_price, quantity, purchase_date) VALUES (?, ?, ?, ?, ?)",
-                        (product_id, buy_price, sell_price, quantity,purchase_date))
+                    (product_id, buy_price, sell_price, quantity, purchase_date))
         conn.commit()
         self.result = "added"
         self.destroy()

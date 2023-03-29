@@ -6,6 +6,7 @@ from tab_two import TabTwo
 from tab_three import TabThree
 from tab_four import TabFour
 
+
 class MiniCRM(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -27,6 +28,7 @@ class MiniCRM(tk.Tk):
 
         tab_four = TabFour(notebook)
         notebook.add(tab_four, text="Учет и финансы")
+
 
 if __name__ == "__main__":
     app = MiniCRM()

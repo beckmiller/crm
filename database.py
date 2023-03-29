@@ -1,5 +1,6 @@
 import sqlite3
 
+
 def create_tables():
     conn = sqlite3.connect('store.db')
     c = conn.cursor()
@@ -27,6 +28,7 @@ def create_tables():
                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
                 batch_id INTEGER NOT NULL,
                 quantity REAL NOT NULL,
+                sale_price REAL NOT NULL,
                 sale_date DATE NOT NULL,
                 FOREIGN KEY(batch_id) REFERENCES Product_batches(id));''')
 
@@ -48,6 +50,7 @@ def create_tables():
 
     conn.commit()
     conn.close()
+
 
 if __name__ == '__main__':
     create_tables()
